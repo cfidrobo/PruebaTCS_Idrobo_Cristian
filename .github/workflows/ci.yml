@@ -1,0 +1,40 @@
+name: CI Pipeline
+
+on:
+  push:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_OWNER: ${{ github.repository_owner }}
+  IMAGE_REPO: ${{ github.event.repository.name }}
+
+jobs:
+  # 1) BUILD: instalar deps y (opcional) build
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build (if defined)
+        run: npm run build || echo "No build step"
+
+  # 2) TEST: correr unit tests
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install deps
+        run: npm ci
+      - name: Run tests
+        env:
+          NODE_ENV: test
+        run: npm test
