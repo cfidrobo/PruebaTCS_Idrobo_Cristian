@@ -14,6 +14,8 @@ spec:
       labels:
         app: devops-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: devops-service
           image: ghcr.io/cfidrobo/pruebatcs_idrobo_cristian:latest 
