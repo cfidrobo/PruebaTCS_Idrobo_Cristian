@@ -16,8 +16,10 @@ resource "kubernetes_deployment" "app" {
       spec {
         container {
           name  = "devops-service"
-          image = "ghcr.io/${var.project}/${path.basename(path.cwd)}:latest"
-          port { container_port = 3000 }
+          image = var.image        # ← paso la imagen desde CI: ghcr.io/…:latest
+          port {
+            container_port = 3000
+          }
         }
       }
     }
@@ -28,7 +30,10 @@ resource "kubernetes_service" "lb" {
   metadata { name = "devops-service-svc" }
   spec {
     selector = { app = kubernetes_deployment.app.spec[0].template[0].metadata[0].labels.app }
-    port { port = 80; target_port = 3000 }
+    port {
+      port        = 80
+      target_port = 3000
+    }
     type = "LoadBalancer"
   }
 }
