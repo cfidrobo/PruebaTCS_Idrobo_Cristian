@@ -117,25 +117,23 @@ jobs:
           
 
   # 6) Terraform
-  tf-init:
+  terraform:
     needs: publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
+
       - name: Authenticate GCP
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
       - name: Terraform Init
         run: terraform -chdir=terraform init
 
-  tf-plan:
-    needs: tf-init
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       - name: Terraform Plan
         run: |
           terraform -chdir=terraform plan \
@@ -145,18 +143,14 @@ jobs:
             -var="image=ghcr.io/${IMAGE_OWNER}/${IMAGE_REPO,,}:latest" \
             -out=tfplan
 
-  tf-apply:
-    if: github.ref_name == 'main'
-    needs: tf-plan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       - name: Terraform Apply
+        if: github.ref_name == 'main'
         run: terraform -chdir=terraform apply -auto-approve tfplan
+
 
   # 7) DEPLOY K8S (sólo en main)
   deploy-gke:
-    needs: tf-apply 
+    needs: terraform 
     if: github.ref_name == 'main' 
     runs-on: ubuntu-latest
     steps:
