@@ -32,7 +32,7 @@ resource "kubernetes_deployment" "app" {
 
         container {
           name  = "devops-service"
-          image = ghcr.io/cfidrobo/pruebatcs_idrobo_cristian:latest       
+          image = "ghcr.io/cfidrobo/pruebatcs_idrobo_cristian:latest"     
           
           port {
             container_port = 3000
