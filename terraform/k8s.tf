@@ -38,7 +38,7 @@ resource "kubernetes_deployment" "app" {
             container_port = 3000
           }
 
-          # <-- INYECTAR CONFIGMAP Y SECRET como ENV
+          
           env_from {
             config_map_ref {
               name = "devops-config"
@@ -50,7 +50,7 @@ resource "kubernetes_deployment" "app" {
             }
           }
 
-          # <-- READINESS PROBE
+          
           readiness_probe {
             tcp_socket {
               port = 3000
@@ -59,7 +59,7 @@ resource "kubernetes_deployment" "app" {
             period_seconds        = 5
           }
 
-          # <-- LIVENESS PROBE
+          
           liveness_probe {
             tcp_socket {
               port = 3000

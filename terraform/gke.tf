@@ -13,8 +13,8 @@ resource "google_container_node_pool" "primary" {
 
   node_config {
     machine_type   = "e2-medium"
-    disk_type      = "pd-standard"   # Disco estándar para evitar uso de SSD
-    disk_size_gb   = 30              # Tamaño moderado (30 GB por nodo)
+    disk_type      = "pd-standard"   
+    disk_size_gb   = 30              
     oauth_scopes   = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 }
