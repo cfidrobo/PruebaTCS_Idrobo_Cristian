@@ -17,6 +17,14 @@ resource "kubernetes_config_map" "app_config" {
   }
 }
 
+resource "kubernetes_secret" "devops_secrets" {
+  metadata { name = "devops-secrets" }
+  type     = "Opaque"
+  data = {
+    API_KEY = base64encode("2f5ae96c-b558-4c7b-a590-a501ae1c3f6c")
+    JWT     = base64encode("clave")
+  }
+}
 
 resource "kubernetes_deployment" "app" {
   metadata {
