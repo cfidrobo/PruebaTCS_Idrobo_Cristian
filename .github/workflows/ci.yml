@@ -159,6 +159,12 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Setup gcloud & install GKE auth plugin
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          install_components: gke-gcloud-auth-plugin
 
       - name: Get GKE credentials
         run: |
