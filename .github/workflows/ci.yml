@@ -112,3 +112,44 @@ jobs:
           docker build -t $IMAGE:${{ steps.tag.outputs.sha }} -t $IMAGE:latest .
           docker push $IMAGE:${{ steps.tag.outputs.sha }}
           docker push $IMAGE:latest
+
+  # 6) DEPLOY K8S (sólo en main)
+  deploy-k8s:
+    needs: publish
+    if: github.ref == 'refs/heads/main'
+    runs-on: self-hosted
+    env:
+      KUBECONFIG: C:\Users\Cristian\.kube\config
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check context
+        shell: cmd
+        run: |
+          echo KUBECONFIG = %KUBECONFIG%
+          kubectl config current-context
+          kubectl get nodes
+
+      - name: Deploy to local K8s
+        shell: cmd
+        run: |
+          setlocal enabledelayedexpansion
+
+          REM Contexto minikube
+          kubectl config use-context minikube
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/secret.yaml
+
+          REM Forzar rollout para que tire la última imagen latest
+          kubectl rollout restart deployment/nodejs-app
+
+          REM Esperar hasta que el nuevo rollout esté listo (timeout 120s)
+          kubectl rollout status deployment/nodejs-app --timeout=120s
+
+          REM Service y HPA
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/hpa.yaml
+
+          endlocal
