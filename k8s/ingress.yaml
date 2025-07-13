@@ -3,11 +3,11 @@ kind: Ingress
 metadata:
   name: devops-service-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "devops-lb-ip"
 spec:
   rules:
-    - host: devops.local 
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix

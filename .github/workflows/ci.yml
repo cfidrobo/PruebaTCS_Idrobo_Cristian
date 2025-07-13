@@ -102,6 +102,15 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker --quiet
+
       - name: Determine image tag
         id: tag
         run: echo "sha=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
@@ -112,45 +121,74 @@ jobs:
           docker build -t $IMAGE:${{ steps.tag.outputs.sha }} -t $IMAGE:latest .
           docker push $IMAGE:${{ steps.tag.outputs.sha }}
           docker push $IMAGE:latest
+          GCR_IMAGE=gcr.io/${{ secrets.GCP_PROJECT }}/$REPO_LOWER
+          docker tag $IMAGE:${{ steps.tag.outputs.sha }} $GCR_IMAGE:${{ steps.tag.outputs.sha }}
+          docker tag $IMAGE:latest             $GCR_IMAGE:latest
+          gcloud auth configure-docker --quiet
+          docker push $GCR_IMAGE:${{ steps.tag.outputs.sha }}
+          docker push $GCR_IMAGE:latest
 
-  # 6) DEPLOY K8S (sólo en main)
-  deploy-k8s:
-    needs: publish 
+  # 6) Terraform
+  tf-init:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Authenticate GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Terraform Init
+        run: terraform -chdir=terraform init
+
+  tf-plan:
+    needs: tf-init
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Terraform Plan
+        run: |
+          terraform -chdir=terraform plan \
+            -var="project=${{ secrets.GCP_PROJECT }}" \
+            -var="region=${{ secrets.GCP_REGION }}" \
+            -var="credentials=${{ secrets.GCP_CREDENTIALS }}" \
+            -out=tfplan
+
+  tf-apply:
     if: github.ref_name == 'main'
-    runs-on: self-hosted
-    env:
-      KUBECONFIG: C:\Users\Cristian\.kube\config
+    needs: tf-plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Terraform Apply
+        run: terraform -chdir=terraform apply -auto-approve tfplan
 
+  # 7) DEPLOY K8S (sólo en main)
+  deploy-gke:
+    needs: tf-apply 
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check context
-        shell: cmd
-        run: |
-          echo KUBECONFIG = %KUBECONFIG%
-          kubectl config current-context
-          kubectl get nodes
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: Deploy to local K8s
-        shell: cmd
+      - name: Get GKE credentials
         run: |
-          setlocal enabledelayedexpansion
+          gcloud container clusters get-credentials devops-cluster \
+            --region ${{ secrets.GCP_REGION }} \
+            --project ${{ secrets.GCP_PROJECT }}
 
-          REM Contexto minikube
-          kubectl config use-context minikube
-          kubectl apply -f k8s/deployment.yaml
+      - name: Deploy manifests to GKE
+        run: |
           kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/secret.yaml
-          kubectl apply -f k8s/ingress.yaml
-
-          REM Forzar rollout para que tire la última imagen latest
-          kubectl rollout restart deployment/devops-service
-
-          REM Esperar hasta que el nuevo rollout esté listo (timeout 120s)
-          kubectl rollout status deployment/devops-service --timeout=120s
-
-          REM Service y HPA
+          kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
-          kubectl apply -f k8s/hpa.yaml 
-
-          endlocal
+          kubectl apply -f k8s/ingress.yaml
+          kubectl rollout restart deployment/devops-service
+          kubectl rollout status deployment/devops-service --timeout=120s
