@@ -38,3 +38,23 @@ jobs:
         env:
           NODE_ENV: test
         run: npm test
+
+  # 3) VULNERABILITY SCAN: npm audit
+  vulnerability:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Audit dependencies and save report
+        run: |
+          npm ci
+          npm audit --audit-level=moderate --json > audit-report.json || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: audit-report.json
+
+ 
