@@ -1,4 +1,3 @@
-data "google_client_config" "current" {}
 provider "kubernetes" {
   host                   = "https://${google_container_cluster.devops.endpoint}"
   token                  = data.google_client_config.current.access_token
@@ -6,7 +5,6 @@ provider "kubernetes" {
     google_container_cluster.devops.master_auth.0.cluster_ca_certificate
   )
 
-  depends_on = [google_container_cluster.devops]
 }
 
 resource "kubernetes_deployment" "app" {
