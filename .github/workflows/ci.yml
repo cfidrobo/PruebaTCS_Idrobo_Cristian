@@ -89,7 +89,7 @@ jobs:
 
 
   # 5) BUILD & PUSH: image tagged con SHA corta y 'latest'
-  docker-publish:
+  publish:
     needs: sonar-analysis
     runs-on: ubuntu-latest
     steps:
@@ -115,7 +115,8 @@ jobs:
 
   # 6) DEPLOY K8S (sólo en main)
   deploy-k8s:
-    needs: docker-publish
+    needs: publish
+    if: github.ref_name == 'main'
     runs-on: self-hosted
     env:
       KUBECONFIG: C:\Users\Cristian\.kube\config
@@ -140,12 +141,13 @@ jobs:
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/secret.yaml
+          kubectl apply -f k8s/ingress.yaml
 
           REM Forzar rollout para que tire la última imagen latest
-          kubectl rollout restart deployment/nodejs-app
+          kubectl rollout restart deployment/devops-service
 
           REM Esperar hasta que el nuevo rollout esté listo (timeout 120s)
-          kubectl rollout status deployment/nodejs-app --timeout=120s
+          kubectl rollout status deployment/devops-service --timeout=120s
 
           REM Service y HPA
           kubectl apply -f k8s/service.yaml
