@@ -6,6 +6,18 @@ provider "kubernetes" {
   )
 }
 
+resource "kubernetes_config_map" "app_config" {
+  metadata {
+    name = "devops-config"
+  }
+
+  data = {
+    NODE_ENV = "production"
+    PORT     = "3000"
+  }
+}
+
+
 resource "kubernetes_deployment" "app" {
   metadata {
     name   = "devops-service"
