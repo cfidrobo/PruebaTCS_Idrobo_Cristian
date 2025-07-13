@@ -139,7 +139,6 @@ jobs:
           terraform -chdir=terraform plan \
             -var="project=${{ secrets.GCP_PROJECT }}" \
             -var="region=${{ secrets.GCP_REGION }}" \
-            -var="credentials=${{ secrets.GCP_CREDENTIALS }}" \
             -var="image=ghcr.io/${IMAGE_OWNER}/${IMAGE_REPO,,}:latest" \
             -out=tfplan
 
