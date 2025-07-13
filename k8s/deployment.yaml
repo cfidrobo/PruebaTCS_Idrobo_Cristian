@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: devops-service
-          image: ghcr.io/cfidrobo/pruebatcs_idrobo_cristian:latest  
+          image: ghcr.io/cfidrobo/pruebatcs_idrobo_cristian:latest 
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
