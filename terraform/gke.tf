@@ -1,8 +1,8 @@
 resource "google_container_cluster" "devops" {
-  name               = "devops-cluster"
-  location           = var.region
-  initial_node_count       = 1          
-  remove_default_node_pool = true        
+  name                     = "devops-cluster"
+  location                 = var.region
+  remove_default_node_pool = true
+  initial_node_count       = 1
 }
 
 resource "google_container_node_pool" "primary" {
@@ -10,9 +10,12 @@ resource "google_container_node_pool" "primary" {
   cluster    = google_container_cluster.devops.name
   location   = var.region
   node_count = 2
+
   node_config {
-    machine_type = "e2-medium"
-    oauth_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+    machine_type   = "e2-medium"
+    disk_type      = "pd-standard"   # Disco estándar para evitar uso de SSD
+    disk_size_gb   = 30              # Tamaño moderado (30 GB por nodo)
+    oauth_scopes   = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 }
 
