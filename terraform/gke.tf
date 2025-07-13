@@ -2,6 +2,8 @@ resource "google_container_cluster" "devops" {
   name               = "devops-cluster"
   location           = var.region
   remove_default_node_pool = true
+  initial_node_count       = 1          
+  remove_default_node_pool = true        
 }
 
 resource "google_container_node_pool" "primary" {
