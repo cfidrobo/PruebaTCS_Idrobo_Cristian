@@ -116,7 +116,6 @@ jobs:
   # 6) DEPLOY K8S (sólo en main)
   deploy-k8s:
     needs: publish
-    if: github.ref_name == 'main'
     runs-on: self-hosted
     env:
       KUBECONFIG: C:\Users\Cristian\.kube\config
