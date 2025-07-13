@@ -168,7 +168,7 @@ jobs:
   # 7) DEPLOY K8S (sólo en main)
   deploy-gke:
     needs: tf-apply 
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'main' 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
