@@ -113,6 +113,13 @@ jobs:
           docker push $IMAGE:${{ steps.tag.outputs.sha }}
           docker push $IMAGE:latest
 
+  test-runner:
+    needs: publish
+    runs-on: self-hosted
+    steps:
+      - run: echo "Runner ejecutándose correctamente en la organización 🎉"
+
+
   # 6) DEPLOY K8S (sólo en main)
   deploy-k8s:
     needs: publish 
