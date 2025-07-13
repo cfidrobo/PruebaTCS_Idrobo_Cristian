@@ -102,14 +102,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
-      - name: Setup gcloud CLI
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ${{ secrets.GCP_PROJECT }}
-          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
-
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker --quiet
 
       - name: Determine image tag
         id: tag
@@ -121,12 +113,7 @@ jobs:
           docker build -t $IMAGE:${{ steps.tag.outputs.sha }} -t $IMAGE:latest .
           docker push $IMAGE:${{ steps.tag.outputs.sha }}
           docker push $IMAGE:latest
-          GCR_IMAGE=gcr.io/${{ secrets.GCP_PROJECT }}/$REPO_LOWER
-          docker tag $IMAGE:${{ steps.tag.outputs.sha }} $GCR_IMAGE:${{ steps.tag.outputs.sha }}
-          docker tag $IMAGE:latest             $GCR_IMAGE:latest
-          gcloud auth configure-docker --quiet
-          docker push $GCR_IMAGE:${{ steps.tag.outputs.sha }}
-          docker push $GCR_IMAGE:latest
+          
 
   # 6) Terraform
   tf-init:
