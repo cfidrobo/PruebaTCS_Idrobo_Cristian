@@ -89,7 +89,7 @@ jobs:
 
 
   # 5) BUILD & PUSH: image tagged con SHA corta y 'latest'
-  publish:
+  docker-publish:
     needs: sonar-analysis
     runs-on: ubuntu-latest
     steps:
@@ -115,7 +115,7 @@ jobs:
 
   # 6) DEPLOY K8S (sólo en main)
   deploy-k8s:
-    needs: publish
+    needs: docker-publish
     runs-on: self-hosted
     env:
       KUBECONFIG: C:\Users\Cristian\.kube\config
