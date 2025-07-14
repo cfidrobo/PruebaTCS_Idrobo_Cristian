@@ -1,8 +1,11 @@
 # 📘 Prueba Técnica DevOps TCS
 
 **Autor:** Cristian Fernando Idrobo Montalvo  
+
 **Repositorio:** https://github.com/cfidrobo/PruebaTCS_Idrobo_Cristian
+
 **Actions:** https://github.com/cfidrobo/PruebaTCS_Idrobo_Cristian/actions
+
 
 ---
 
@@ -73,7 +76,8 @@ Cualquier otro método (`GET`, `PUT`, etc.) o header inválido devuelve `"ERROR"
    ```
 
 3. **Probar localmente con Windows en PowerShell**  
-```powershell
+ ```
+
 Invoke-RestMethod http://localhost:3000/DevOps `
   -Method Post `
   -Headers @{
@@ -84,6 +88,7 @@ Invoke-RestMethod http://localhost:3000/DevOps `
   -Body '{"message":"This is a test","to":"Juan Perez","from":"Rita Asturia","timeToLifeSec":45}' `
   -ContentType 'application/json'
 
+ ```
 ---
 
 ## 📈 Pipeline CI/CD (GitHub Actions)
