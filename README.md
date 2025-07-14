@@ -1,8 +1,8 @@
 # 📘 Prueba Técnica DevOps TCS
 
 **Autor:** Cristian Fernando Idrobo Montalvo  
-**Repositorio:** https://github.com/cfidrobo/PruebaTCS_Idrobo_Cristian 
-**Actions:** https://github.com/cfidrobo/PruebaTCS_Idrobo_Cristian/actions 
+**Repositorio:** https://github.com/cfidrobo/PruebaTCS_Idrobo_Cristian
+**Actions:** https://github.com/cfidrobo/PruebaTCS_Idrobo_Cristian/actions
 
 ---
 
@@ -73,9 +73,16 @@ Cualquier otro método (`GET`, `PUT`, etc.) o header inválido devuelve `"ERROR"
    ```
 
 3. **Probar localmente con Windows en PowerShell**  
-   ```powershell
-Invoke-RestMethod http://localhost:3000/DevOps `  -Method Post `  -Headers @{     "Content-Type"="application/json";     "X-Parse-REST-API-Key"="2f5ae96c-b558-4c7b-a590-a501ae1c3f6c";     "X-JWT-KWY"="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0cngiOjE3NTIyOTYxODUzNzksImlhdCI6MTc1MjI5NjE4NX0.VYaZn6iAqIZj8vgdlTDYfL826WXz2ibn_sC3yksQe8A"   } `  -Body '{"message":"This is a test","to":"Juan Perez","from":"Rita 
-Asturia","timeToLifeSec":45}' `  -ContentType 'application/json'
+```powershell
+Invoke-RestMethod http://localhost:3000/DevOps `
+  -Method Post `
+  -Headers @{
+    "Content-Type" = "application/json";
+    "X-Parse-REST-API-Key" = "2f5ae96c-b558-4c7b-a590-a501ae1c3f6c";
+    "X-JWT-KWY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0cngiOjE3NTIyOTYxODUzNzksImlhdCI6MTc1MjI5NjE4NX0.VYaZn6iAqIZj8vgdlTDYfL826WXz2ibn_sC3yksQe8A"
+  } `
+  -Body '{"message":"This is a test","to":"Juan Perez","from":"Rita Asturia","timeToLifeSec":45}' `
+  -ContentType 'application/json'
 
 ---
 
