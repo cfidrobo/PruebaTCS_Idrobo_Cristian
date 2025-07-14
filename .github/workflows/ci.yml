@@ -89,7 +89,7 @@ jobs:
 
 
   # 5) BUILD & PUSH: image tagged con SHA corta y 'latest'
-    # 5) BUILD & PUSH: image tagged con SHA corta y 'latest'
+  
   publish:
     needs: sonar-analysis
     runs-on: ubuntu-latest
