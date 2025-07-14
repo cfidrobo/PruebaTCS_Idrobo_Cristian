@@ -22,7 +22,7 @@ resource "kubernetes_secret" "devops_secrets" {
   type     = "Opaque"
   data = {
     API_KEY = "2f5ae96c-b558-4c7b-a590-a501ae1c3f6c"
-    JWT     = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0cngiOjE3NTIyOTYxODUzNzksImlhdCI6MTc1MjI5NjE4NX0.VYaZn6iAqIZj8vgdlTDYfL826WXz2ibn_sC3yksQe8A"
+    JWT     = "clave"
   }
 }
 

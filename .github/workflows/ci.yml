@@ -145,3 +145,8 @@ jobs:
       - name: Terraform Apply
         if: github.ref_name == 'main'
         run: terraform -chdir=terraform apply -auto-approve tfplan
+
+      - name: Restart deployment
+        run: |
+          kubectl rollout restart deployment/devops-service
+          kubectl rollout status deployment/devops-service --timeout=120s
