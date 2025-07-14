@@ -114,8 +114,6 @@ jobs:
           docker push $IMAGE:${{ steps.tag.outputs.sha }}
           docker push $IMAGE:latest
 
-          
-
   # 6) Terraform
   terraform:
     needs: publish
