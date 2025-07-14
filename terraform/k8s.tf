@@ -27,27 +27,34 @@ resource "kubernetes_secret" "devops_secrets" {
 }
 resource "kubernetes_ingress_v1" "app" {
   metadata {
-    name        = "devops-service-ingress"
+    name = "devops-service-ingress"
     annotations = {
-      "kubernetes.io/ingress.class"                         = "gce"
-      "kubernetes.io/ingress.global-static-ip-name"         = google_compute_address.lb_ip.name
+      "kubernetes.io/ingress.class"                 = "gce"
+      "kubernetes.io/ingress.global-static-ip-name" = google_compute_address.lb_ip.name
     }
   }
+
   spec {
     rule {
       http {
         path {
-          path     = "/"
+          path      = "/"
           path_type = "Prefix"
+
           backend {
-            service_name = kubernetes_service.lb.metadata[0].name
-            service_port = 80
+            service {
+              name = kubernetes_service.lb.metadata[0].name
+              port {
+                number = 80
+              }
+            }
           }
         }
       }
     }
   }
 }
+
 
 resource "kubernetes_deployment" "app" {
   metadata {
