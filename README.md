@@ -1,4 +1,4 @@
-# 📘 Prueba Técnica DevOps TCS
+#  Prueba Técnica DevOps TCS
 
 **Autor:** Cristian Fernando Idrobo Montalvo  
 
@@ -9,13 +9,13 @@
 
 ---
 
-## 🚀 Introducción
+##  Introducción
 
 Este proyecto implementa un microservicio en **Node.js + Express** con un endpoint `/DevOps` asegurado por **API Key** y **JWT**, dockerizado y desplegado en **Google Kubernetes Engine (GKE)** usando **Terraform**. La entrega incluye además un **pipeline CI/CD** completo en **GitHub Actions**.
 
 ---
 
-## 🔑 Credenciales de prueba
+##  Credenciales de prueba
 
 | Clave                   | Valor                                                                 |
 |-------------------------|-----------------------------------------------------------------------|
@@ -25,7 +25,7 @@ Este proyecto implementa un microservicio en **Node.js + Express** con un endpoi
 
 ---
 
-## 🛠️ Exportar variables de entorno
+##  Exportar variables de entorno
 
 Desde tu terminal, ejecuta:
 
@@ -38,7 +38,7 @@ export HOST="http://35.193.20.145"
 
 ---
 
-## 📝 Probar el endpoint con curl
+##  Probar el endpoint con curl
 
 
 ```bash
@@ -62,7 +62,7 @@ Cualquier otro método (`GET`, `PUT`, etc.) o header inválido devuelve `"ERROR"
 
 ---
 
-## 📦 Ejecutar localmente con Docker
+##  Ejecutar localmente con Docker
 
 1. **Construir la imagen**  
    ```bash
@@ -91,7 +91,7 @@ Invoke-RestMethod http://localhost:3000/DevOps `
  ```
 ---
 
-## 📈 Pipeline CI/CD (GitHub Actions)
+##  Pipeline CI/CD (GitHub Actions)
 
 El pipeline corre en cada **push** y consta de 6 etapas:
 
@@ -104,7 +104,7 @@ El pipeline corre en cada **push** y consta de 6 etapas:
 
 ---
 
-## ✔️ Comprobación en GKE
+##  Comprobación en GKE
 
 Una vez desplegado en producción:
 
